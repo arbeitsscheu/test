@@ -1,0 +1,49 @@
+/**
+  *
+  * Beschreibung
+  *
+  * @version 1.0 vom 22.12.2017
+  * @author 
+  */
+
+public class Data {
+  
+  // Anfang Attribute
+  private String Sender;
+  private String Empfänger;
+  private double Wert;
+  // Ende Attribute
+  
+  public Data(String pSender, String pEmpfänger, double pWert) {
+    this.Sender = pSender;
+    this.Empfänger = pEmpfänger;
+    this.Wert = pWert;
+  }
+
+  // Anfang Methoden
+  public String getSender() {
+    return Sender;
+  }
+
+  public String getEmpfänger() {
+    return Empfänger;
+  }
+
+  public double getWert() {
+    return Wert;
+  }
+
+  public void setWert(double Wert) {
+    this.Wert = Wert;
+  }
+
+  public void setEmpfänger(String Empfänger) {
+    this.Empfänger = Empfänger;
+  }
+
+  public void setSender(String Sender) {
+    this.Sender = Sender;
+  }
+
+  // Ende Methoden
+} // end of Data
