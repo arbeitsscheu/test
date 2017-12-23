@@ -1,0 +1,230 @@
+ import java.awt.*;
+ import java.awt.event.*;
+ import javax.swing.*;
+ import javax.swing.event.*;
+ import java.util.*;
+ import java.time.LocalDateTime;
+ import java.text.DateFormat;
+ import java.text.SimpleDateFormat;
+ import java.time.LocalDateTime;
+ import java.time.format.DateTimeFormatter;
+ import java.util.Calendar;
+ import java.util.Date;
+/**
+  *
+  * Beschreibung
+  *
+  * @version 1.0 vom 12.10.2017
+  * @author 
+  */
+
+public class GUI_Client extends JFrame {
+  // Anfang Attribute
+  private JTextField tIP = new JTextField();
+  private JTextField tPort = new JTextField();
+  private JButton bt_connect = new JButton();
+  private JTextField tMessage = new JTextField();
+  private JButton bt_send = new JButton();
+  private JTextArea ta_msg = new JTextArea("");
+  private JScrollPane ta_msgScrollPane = new JScrollPane(ta_msg);
+  private JLabel lb_Nachrichten = new JLabel();
+  
+  private MyEchoClient myClient;
+  private MyEchoServer myServer;
+  public List <Data> transaktionen = new List();
+  public List <Block> blockchainList = new List <Block>();
+  
+  
+  private JTextArea ta_User = new JTextArea("");
+  private JScrollPane ta_UserScrollPane = new JScrollPane(ta_User);
+  private JButton bAusloggen = new JButton();
+  private JButton bt_Teilnehmer = new JButton();
+  private JButton bt_erstelleBlockchain = new JButton();
+  private JTextField tf_Sender = new JTextField();
+  private JLabel lb_Sender = new JLabel();
+  private JLabel lb_Empfaenger = new JLabel();
+  private JTextField tf_Empfaenger = new JTextField();
+  private JLabel lb_Wert = new JLabel();
+  private JNumberField nf_Wert = new JNumberField();
+  private JButton bt_anhangAnBlockchain = new JButton();
+  // Ende Attribute
+  
+  public GUI_Client(String title) { 
+    // Frame-Initialisierung
+    super(title);
+    setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    int frameWidth = 895; 
+    int frameHeight = 536;
+    setSize(frameWidth, frameHeight);
+    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+    int x = (d.width - getSize().width) / 2;
+    int y = (d.height - getSize().height) / 2;
+    setLocation(x, y);
+    setResizable(false);
+    Container cp = getContentPane();
+    cp.setLayout(null);
+    // Anfang Komponenten
+    
+    tIP.setBounds(144, 32, 129, 33);
+    tIP.setText("127.0.0.1");
+    cp.add(tIP);
+    tPort.setBounds(144, 80, 129, 33);
+    tPort.setText("2000");
+    cp.add(tPort);
+    bt_connect.setBounds(272, 32, 105, 81);
+    bt_connect.setText("Verbinden");
+    bt_connect.setMargin(new Insets(2, 2, 2, 2));
+    bt_connect.addActionListener(new ActionListener() { 
+      public void actionPerformed(ActionEvent evt) { 
+        bt_connect_ActionPerformed(evt);
+      }
+    });
+    cp.add(bt_connect);
+    tMessage.setBounds(32, 224, 273, 33);
+    tMessage.setText("USER:");
+    cp.add(tMessage);
+    bt_send.setBounds(312, 224, 105, 33);
+    bt_send.setText("send");
+    bt_send.setMargin(new Insets(2, 2, 2, 2));
+    bt_send.addActionListener(new ActionListener() { 
+      public void actionPerformed(ActionEvent evt) { 
+        bt_send_ActionPerformed(evt);
+      }
+    });
+    cp.add(bt_send);
+    ta_msgScrollPane.setBounds(32, 288, 385, 209);
+    cp.add(ta_msgScrollPane);
+    lb_Nachrichten.setBounds(32, 264, 114, 20);
+    lb_Nachrichten.setText("Nachrichtenfenster");
+    cp.add(lb_Nachrichten);
+    ta_UserScrollPane.setBounds(432, 288, 161, 209);
+    ta_User.setEditable(false);
+    cp.add(ta_UserScrollPane);
+    bAusloggen.setBounds(272, 112, 105, 33);
+    bAusloggen.setText("Ausloggen");
+    bAusloggen.setMargin(new Insets(2, 2, 2, 2));
+    bAusloggen.addActionListener(new ActionListener() { 
+      public void actionPerformed(ActionEvent evt) { 
+        bAusloggen_ActionPerformed(evt);
+      }
+    });
+    cp.add(bAusloggen);
+    bt_Teilnehmer.setBounds(424, 224, 33, 33);
+    bt_Teilnehmer.setText("@");
+    bt_Teilnehmer.setMargin(new Insets(2, 2, 2, 2));
+    bt_Teilnehmer.addActionListener(new ActionListener() { 
+      public void actionPerformed(ActionEvent evt) { 
+        bt_Teilnehmer_ActionPerformed(evt);
+      }
+    });
+    bt_Teilnehmer.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+    bt_Teilnehmer.setEnabled(true);
+    cp.add(bt_Teilnehmer);
+    bt_erstelleBlockchain.setBounds(0, 0, 129, 113);
+    bt_erstelleBlockchain.setText("blockchain erstellen");
+    bt_erstelleBlockchain.setMargin(new Insets(2, 2, 2, 2));
+    bt_erstelleBlockchain.addActionListener(new ActionListener() { 
+      public void actionPerformed(ActionEvent evt) { 
+        bt_erstelleBlockchain_ActionPerformed(evt);
+      }
+    });
+    cp.add(bt_erstelleBlockchain);
+    tf_Sender.setBounds(520, 32, 345, 57);
+    cp.add(tf_Sender);
+    lb_Sender.setBounds(440, 32, 75, 57);
+    lb_Sender.setText("Sender:");
+    cp.add(lb_Sender);
+    lb_Empfaenger.setBounds(440, 80, 75, 57);
+    lb_Empfaenger.setText("Empfänger:");
+    cp.add(lb_Empfaenger);
+    tf_Empfaenger.setBounds(520, 88, 345, 57);
+    cp.add(tf_Empfaenger);
+    lb_Wert.setBounds(440, 144, 195, 57);
+    lb_Wert.setText("Wert:");
+    cp.add(lb_Wert);
+    nf_Wert.setBounds(632, 144, 233, 57);
+    nf_Wert.setText("");
+    cp.add(nf_Wert);
+    bt_anhangAnBlockchain.setBounds(536, 200, 329, 57);
+    bt_anhangAnBlockchain.setText("an blockchain hängen");
+    bt_anhangAnBlockchain.setMargin(new Insets(2, 2, 2, 2));
+    bt_anhangAnBlockchain.addActionListener(new ActionListener() { 
+      public void actionPerformed(ActionEvent evt) { 
+        bt_anhangAnBlockchain_ActionPerformed(evt);
+      }
+    });
+    cp.add(bt_anhangAnBlockchain);
+    // Ende Komponenten
+    
+    setVisible(true);
+  } // end of public GUI_Client
+  
+  // Anfang Methoden
+  
+  public static void main(String[] args) {
+    new GUI_Client("GUI_Client");
+  } // end of main
+  
+  public void bt_connect_ActionPerformed(ActionEvent evt) {
+    String IP = tIP.getText();
+    int Port = Integer.parseInt(tPort.getText());
+    myClient = new MyEchoClient(IP,Port, this.ta_msg, this.ta_User);
+  } // end of bt_connect_ActionPerformed
+
+  public void bt_send_ActionPerformed(ActionEvent evt) {
+    
+    
+    myClient.send(tMessage.getText());
+    tMessage.setText("");
+    
+  } // end of bt_send_ActionPerformed
+
+  public void bAusloggen_ActionPerformed(ActionEvent evt) {
+    myClient.send("Ausloggen");
+    
+  } // end of bAusloggen_ActionPerformed
+
+  public void bt_Teilnehmer_ActionPerformed(ActionEvent evt) {
+    myClient.send("Teilnehmer");
+    
+  } // end of bt_Teilnehmer_ActionPerformed
+  
+  public String aktuelleZeit() 
+  {
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    LocalDateTime now = LocalDateTime.now();
+    System.out.println(dtf.format(now));
+    return dtf.format(now);
+  }
+  
+  public void bt_erstelleBlockchain_ActionPerformed(ActionEvent evt) {
+    Blockchain tempBlockchain = new Blockchain(transaktionen, aktuelleZeit());
+    
+    List <Block> temp = tempBlockchain.blockchain;
+    temp.toFirst(); 
+    while (temp.hasAccess()) {
+      
+      blockchainList.append(temp.getContent());
+      temp.next();
+    } // end of for
+    
+  } // end of bt_erstelleBlockchain_ActionPerformed
+
+  public void bt_anhangAnBlockchain_ActionPerformed(ActionEvent evt) {
+    String text = tf_Sender.getText();
+    blockchainList.toLast();
+    String tempVorherigerHash= blockchainList.getContent().getBlockHash();
+    
+    Data tempData = new Data (tf_Sender.getText(), tf_Empfaenger.getText(), nf_Wert.getDouble());
+    transaktionen.append(tempData);
+    
+    
+    Block tempBlock = new Block(tempVorherigerHash, transaktionen, aktuelleZeit(), blockchainList.getContent().getZähler()+1);
+    
+    System.out.println("Vorheriger hash: "+tempBlock.getVorherigerHash());
+    System.out.println("Block hash: "+tempBlock.getBlockHash());
+    blockchainList.append(tempBlock);
+  } // end of bt_anhangAnBlockchain_ActionPerformed
+
+  // Ende Methoden
+} // end of class GUI_Client
