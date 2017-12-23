@@ -1,0 +1,68 @@
+/**
+  *
+  * Beschreibung
+  *
+  * @version 1.0 vom 19.12.2017
+  * @author 
+  */
+
+
+public class Blockchain {
+  
+  // Anfang Attribute
+  public List <Block> blockchain = new List <Block>();
+  public List <Data> transaktionen = new List <Data>();
+  // Ende Attribute
+  
+  // Anfang Methoden
+    
+  public Blockchain(List<Data> pTransaktionen, String pAktuellleZeit){
+    
+    transaktionen = pTransaktionen; 
+    
+    String aktuelleZeit = pAktuellleZeit;
+    Data tempData = new Data("Tim", "Bob", 1.5); 
+    transaktionen.append(tempData);
+    
+    
+    
+    Block ersterBlock = new Block("0", transaktionen, "01/01/2017", 0);
+    blockchain.append(ersterBlock);
+    
+    Data tempData2 = new Data("Bob", "Tim", 2.6); 
+    transaktionen.append(tempData2);
+    
+    Block block2 = new Block(ersterBlock.getBlockHash(), transaktionen, aktuelleZeit, 1);
+    blockchain.append(block2);
+    
+    System.out.println("block1");
+    System.out.println("Vorheriger hash: "+ersterBlock.getVorherigerHash());
+    System.out.println("Block hash: "+ersterBlock.getBlockHash());  
+    System.out.println("block2");
+    System.out.println("Vorheriger hash: "+block2.getVorherigerHash());
+    System.out.println("Block hash: "+block2.getBlockHash());
+    
+    
+  }
+
+
+    
+  public Block aktuellerBlock() {
+    blockchain.toFirst();
+    return blockchain.getContent(); 
+  }
+
+  /*public void addBlock(List<String> transaktionen, String pZeitstempel) {
+    blockchain.toFirst();
+    String vorherigerHash = blockchain.getContent().getBlockHash();
+    
+    Block neuerBlock = new Block(""+vorherigerHash, transaktionen, pZeitstempel, blockchain.getContent().getZähler()+1); 
+    
+    
+    neuerBlock.blockHash = neuerBlock.berechneHash();
+    blockchain.append(neuerBlock);
+    System.out.println(""+neuerBlock.blockHash);
+    
+  } */
+  // Ende Methoden
+} // end of Blockchain
